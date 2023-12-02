@@ -2,14 +2,26 @@
 {
     using DAL.Models;
     using Microsoft.EntityFrameworkCore;    
-    public class ApplicationContext: DbContext
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
+    public class ApplicationContext: IdentityDbContext<IdentityUser,IdentityRole,string>
     {
-        public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Tasks> Tasks { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) { 
-            modelBuilder.Entity<User>().HasKey(x => x.Id);
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Tasks>()
+            .HasMany(t => t.SubTasks)
+            .WithOne()
+            .HasForeignKey(t => t.BaseTaskId);
+
+             modelBuilder.Entity<Tasks>()
+            .HasOne(p => p.User)
+            .WithMany()
+            .HasForeignKey(p => p.UserId); 
         }
     }
 }
