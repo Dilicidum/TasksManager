@@ -1,5 +1,5 @@
 ﻿using API.Controllers;
-using API.Models;
+using Services.Abstractions.DTO;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -23,9 +23,9 @@ namespace UnitTests.Controllers
     {
         private Mock<UserManager<IdentityUser>> _userManager;
         private Mock<RoleManager<IdentityRole>> _roleManager;
+        private Mock<SignInManager<IdentityUser>> _signInManager;
         private Mock<IMapper> _mapperMock;
         private UsersController _controller;
-        private Mock<SignInManager<IdentityUser>> _signInManager;
 
         [SetUp]
         public void Setup()

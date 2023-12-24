@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using DAL.Models;
-using BLL.Models;
+using Services.Abstractions.DTO;
 
-namespace API.Models
+namespace Services.Abstractions.DTO
 {
     public class MapperProfile : Profile
     {

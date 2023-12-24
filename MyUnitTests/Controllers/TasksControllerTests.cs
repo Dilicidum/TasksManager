@@ -1,9 +1,8 @@
 ﻿using API.Controllers;
-using API.Models;
+using Services.Abstractions.DTO;
 using AutoMapper;
-using BLL.Interfaces;
-using DAL.Models;
-using DAL.Specifications;
+using Domain.Entities;
+using Domain.Specifications;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
+using Services.Abstractions.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -18,6 +18,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Ardalis.Specification;
 
 namespace UnitTests.Controllers
 {
@@ -61,10 +62,10 @@ namespace UnitTests.Controllers
         {
             // Arrange
             var inputTask = new TaskInputModel(){
-                TaskType = TaskType.Task,
+                TaskType = Domain.Entities.TaskType.Task,
                 BaseTaskId = null,
-                Category = TaskCategory.Work,
-                Status = DAL.Models.TaskStatus.None,
+                Category = Domain.Entities.TaskCategory.Work,
+                Status = Domain.Entities.TaskStatus.None,
                 Name = "TaskName",
                 Description = "TaskDescription",
                 DueDate = DateTime.Today.AddDays(1),
@@ -75,7 +76,7 @@ namespace UnitTests.Controllers
                 TaskType = TaskType.Task,
                 BaseTaskId = null,
                 Category = TaskCategory.Work,
-                Status = DAL.Models.TaskStatus.None,
+                Status = Domain.Entities.TaskStatus.None,
                 Name = "TaskName",
                 Description = "TaskDescription",
                 DueDate = DateTime.Today.AddDays(1),
@@ -115,11 +116,11 @@ namespace UnitTests.Controllers
         {
             // Arrange
             var taskList = new List<Tasks>();
-            _taskService.Setup(x => x.GetTasksForUser(It.IsAny<string>(), It.IsAny<Specification<Tasks>>()))
+            _taskService.Setup(x => x.GetTasksForUser(It.IsAny<TasksByTypeAndStatusAndCategorySpecAndUserId>()))
                 .ReturnsAsync(taskList);
 
             // Act
-            var result = await _controller.GetTasksWithFilter(userId, TaskType.Task, DAL.Models.TaskStatus.Done, TaskCategory.Fitness);
+            var result = await _controller.GetTasksWithFilter(userId, Domain.Entities.TaskType.Task, Domain.Entities.TaskStatus.Done, Domain.Entities.TaskCategory.Fitness);
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
@@ -133,7 +134,7 @@ namespace UnitTests.Controllers
         public async Task GetTasksWithFilter_UserDoesNotHaveAccess_ReturnsForbid(string userId)
         {
             // Act
-            var result = await _controller.GetTasksWithFilter(userId, TaskType.Task, null, null);
+            var result = await _controller.GetTasksWithFilter(userId, Domain.Entities.TaskType.Task, null, null);
 
             // Assert
             Assert.IsInstanceOf<ForbidResult>(result);

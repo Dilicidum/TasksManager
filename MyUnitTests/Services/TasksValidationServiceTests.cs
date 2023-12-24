@@ -1,7 +1,4 @@
-﻿using BLL.Services;
-using DAL.Interfaces;
-using DAL.Models;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -9,6 +6,16 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Service.Services;
+using Services.Abstractions.Interfaces;
+using AutoMapper;
+using System.Diagnostics.CodeAnalysis;
+using Services.Services;
+using Services.Abstractions.DTO;
+using Domain.Entities;
+using Infrastructure;
+using Domain.Interfaces;
+using Domain.Specifications;
 
 namespace UnitTests.Services
 {
@@ -33,7 +40,7 @@ namespace UnitTests.Services
             // Arrange
             var task = new Tasks { Id = taskId};
 
-            _unitOfWork.Setup(x => x.TasksRepository.GetById(taskId)).ReturnsAsync(task);
+            _unitOfWork.Setup(x => x.TasksRepository.GetByIdAsync(taskId,It.IsAny<CancellationToken>())).ReturnsAsync(task);
 
             // Act
             var res = await _service.ValidateTaskExistence(taskId);
@@ -47,7 +54,7 @@ namespace UnitTests.Services
         public async Task ValidateTaskExistence_ShouldReturnFalse_WhenTaskDoesNotExist(int taskId)
         {
             // Arrange
-            _unitOfWork.Setup(x => x.TasksRepository.GetById(taskId)).ReturnsAsync((Tasks)null);
+            _unitOfWork.Setup(x => x.TasksRepository.GetByIdAsync(taskId,It.IsAny<CancellationToken>())).ReturnsAsync((Tasks)null);
 
             // Act
             var result = await _service.ValidateTaskExistence(taskId);

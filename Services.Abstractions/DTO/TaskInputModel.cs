@@ -1,9 +1,9 @@
-﻿using DAL.Models;
+﻿using Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
-namespace API.Models
+namespace Services.Abstractions.DTO
 {
     public class TaskInputModel
     {
@@ -19,7 +19,7 @@ namespace API.Models
         public TaskCategory Category { get; set; }
 
         [Required]
-        public DAL.Models.TaskStatus Status { get; set; }
+        public Domain.Entities.TaskStatus Status { get; set; }
 
         public int? BaseTaskId { get;set; }
 
